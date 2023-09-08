@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center">Libros</h1>
+                {{ libros }}
+
+                <a href="{% url 'libro_create' %}" class="btn btn-success">CREAR LIBRO</a>
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">NOMBRE</th>
+                        <th scope="col">DESCRIPCION</th>
+                        <th scope="col">CATEGORIA</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                     
+                    {% for libro in libros %}
+                      <tr>
+                        <th scope="row">{{ libro.id }}</th>
+                        <td>
+                          <a href="{% url 'libro_show' id=libro.id %}">{{ libro.nombre }}</a>
+                        </td>
+                        <td>{{ libro.descripcion }}</td>
+                        <td>{{ libro.categoria.nombre }}</td>
+
+                        <td>
+                          <a href="{% url 'libro_delete' id=libro.id %}">ELIMINAR</a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

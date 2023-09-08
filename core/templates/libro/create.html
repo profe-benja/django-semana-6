@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block contenido %}
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h1 class="text-center">Nuevo libro</h1>
+
+                {% comment %} <div class="alert alert-success" role="alert">
+                  Se ha creado correctamente!
+                </div> {% endcomment %}
+
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{% url 'libro_index' %}" id="formulario" method="POST">
+                          {% csrf_token %}
+
+                          
+                          <div class="mb-3" id="div-cargo">
+                            <label for="codigo" class="form-label">Codigo</label>
+                            <input type="text" class="form-control" id="codigo"  name="codigo" placeholder="">
+                          </div>
+
+                          <div class="mb-3">
+                            <label for="" class="form-label">NOMBRE</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="" required>
+                            <div class="invalid-feedback">
+                              El nombre es requerido
+                            </div>
+                            <!-- <small class="text-danger">El nombre es requerido</small> -->
+                          </div>
+
+                          <div class="mb-3" id="div-cargo">
+                            <label for="Descripcion" class="form-label">Descripcion</label>
+                            <input type="text" class="form-control" id="Descripcion"  name="descripcion" placeholder="">
+                          </div>
+
+                          <div class="mb-3">
+                            <label for="" class="form-label">Categoria</label>
+                            <select class="form-select" aria-label="Default select example" name="categoria">
+                            {% for categoria in categorias %}
+                                <option value="{{ categoria.id }}">{{ categoria.nombre }}</option>
+                             {% endfor %}
+                            </select>
+                          </div>
+
+                          <div class="mb-3">
+                              <button type="submit" class="btn btn-outline-primary">ENVIAR</button>
+                          </div>
+                        </form>
+                    </div>
+                  </div>
+                
+
+
+            </div>
+           
+        </div>
+    </div>
+
+{% endblock %}

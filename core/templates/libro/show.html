@@ -61,10 +61,10 @@
             <a href="../categoria/idioma.html">categoria</a>
                 <div class="col-12 col-md-6 col-lg-4 mb-3">
                   <div class="card">
-                    <img src="{% static img %}" class="card-img-top" alt="...">
+                    <img src="" class="card-img-top" alt="...">
                     <div class="card-body">
-                      <h5 class="card-title">{{ nombre }}</h5>
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      <h5 class="card-title">{{ libro.nombre }}</h5>
+                      <p class="card-text">{{ libro.descripcion }}</p>
                       <div class="d-grid gap-2">
                         <button class="btn btn-primary" type="button">SOLICITAR</button>
                       </div>
