@@ -1,6 +1,18 @@
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .models import Libro, Categoria
+# añadio UserProfile
+from .models import Libro, Categoria, UserProfile
+
+
+from django.contrib.auth import authenticate, login, logout
+
+from django.contrib.auth.decorators import login_required
+
+from .decorators import role_required
+
+from django.contrib.auth.models import User
+
+from django.contrib import messages
 
 def index(request):
     return render(request, 'index.html')
@@ -34,12 +46,15 @@ def libro_ingles(request):
 
 
 # LIBROS
-
+# @login_required
+@role_required('admin', 'cliente')
 def libro_index(request):
     libros = Libro.objects.all() # SELECT * FROM libro
     
+    perfil = request.session.get('perfil')
     contexto = {
-        'libros': libros
+        'libros': libros,
+        'perfil': perfil
     }
     
     
@@ -68,6 +83,7 @@ def libro_index(request):
     
     return render(request, 'libro/index.html', contexto)
 
+@role_required('admin')
 def libro_create(request):
     
     categorias = Categoria.objects.all()
@@ -78,7 +94,7 @@ def libro_create(request):
     
     return render(request, 'libro/create.html', contexto)
 
-
+@role_required('admin','cliente')
 def libro_show(request, id):
     
     libro = get_object_or_404(Libro, id=id)
@@ -97,19 +113,100 @@ def libro_delete(request, id):
     # return render(request, 'libro/index.html')
 
 
+# Semana 6
+# AUTH
 
-# def libro_show(request, id):
+def inicio_sesion(request): 
     
+    # messages.success(request, 'bienvendio a la pagina de inicio de sesion')
     
-#     # [0,1,2]
-#     libros = ['ingles','matematica','fe']
-#     imagenes = ['img/libro-ingles.png','img/libro-matematicas.png','img/libro-fe.png']
-    
-#     libro = libros[id-1]
-#     img = imagenes[id-1]
-    
-#     contexto = {
-#         'nombre': libro,
-#         'img': img
-#     }
-#     return render(request, 'libro/show.html', contexto)
+    if request.method == 'POST':
+        usuario = request.POST.get('usuario')
+        clave = request.POST.get('pass')
+        # print('')
+        # print('')
+        # print(f"usuario {usuario} clave {clave}")
+        # print(request.POST)
+        # print('')
+        # print('')
+        
+        user = authenticate(request, username=usuario, password=clave)
+        # print('')
+        # print('')
+        # print(user)
+        # print('')
+        # print('')
+        if user is not None:
+            profile = UserProfile.objects.get(user=user)
+            
+            request.session['perfil'] = profile.role
+            
+            
+            login(request, user)
+            
+            return redirect('libro_index')
+        else:
+            context = {
+                'error' : 'Error intente nuevamente.'
+            }
+            return render(request, 'auth/inicio_sesion.html', context)
+        
+    return render(request, 'auth/inicio_sesion.html')
+
+@role_required('cliente','admin')
+def logout_view(request):
+    logout(request)
+    return redirect('inicio_sesion')
+
+
+# CRUD USUARIO
+
+# @login_required
+# def usuario_list(request):
+#     usuarios = User.objects.all()
+#     context = {'usuarios': usuarios}
+#     return render(request, 'usuarios/index.html', context)
+
+# @login_required
+def usuario_create(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        
+        user = User.objects.create_user(username=username, first_name=first_name, last_name=last_name, email=email, password=password)
+
+        role = 'cliente'
+        UserProfile.objects.create(user=user, role=role) 
+
+        return redirect('usuario_list')
+    return render(request, 'usuarios/create.html')
+
+# @login_required
+def usuario_update(request, pk):
+    usuario = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        usuario.username = request.POST.get('username')
+        usuario.first_name = request.POST.get('first_name')
+        usuario.last_name = request.POST.get('last_name')
+        usuario.email = request.POST.get('email')
+        usuario.save()
+
+        # role = request.POST.get('role')
+        # user_profile.role = role
+        # user_profile.save() 
+
+        return redirect('usuario_list')
+    context = {'usuario': usuario}
+    return render(request, 'usuarios/update.html', context)
+
+# @login_required
+def usuario_delete(request, pk):
+    usuario = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        usuario.delete()
+        return redirect('usuario_list')
+    context = {'usuario': usuario}
+    return render(request, 'usuarios/delete.html', context)

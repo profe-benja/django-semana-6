@@ -2,9 +2,14 @@
 
 {% block contenido %}
     <div class="container">
+
+        {% comment %} <img src="{% static 'img/biblioteca.jpg' %}" class="card-img-top" alt="..."> {% endcomment %}
+
         <div class="row justify-content-center">
             <div class="col-md-6">
-                <h1 class="text-center">INICIO</h1>
+                <h1 class="text-center">
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg btn-block">Inicio de sesion</a>
+                </h1>
 
             </div>
         </div>

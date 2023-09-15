@@ -7,7 +7,19 @@
                 <h1 class="text-center">Libros</h1>
                 {{ libros }}
 
+                {% if perfil == 'admin' %}
+                  <h1 class="text-center">Bienvenido admin</h1>
+
+                {% else %}
+                  <h1 class="text-center">Bienvenido cliente</h1>
+                {% endif %}
+
+
+
+                {% if perfil == 'admin' %}
                 <a href="{% url 'libro_create' %}" class="btn btn-success">CREAR LIBRO</a>
+                {% endif %}
+                
                 <table class="table">
                     <thead>
                       <tr>

@@ -138,3 +138,8 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR,'core/static'),)
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+ROLES = (
+    ('admin', 'Administrador'),
+    ('cliente', 'Cliente'),
+)
